@@ -1,0 +1,15 @@
+{
+  "last_updated": "2026-10-28",
+  "requests": [
+    {
+      "spec_id": "RES-2026-0302",
+      "spec_title": "Columnar Zone Maps for Scan Pruning",
+      "implementation_project": null,
+      "implementation_language": null,
+      "decision": "no_implementation",
+      "target_language": null,
+      "issue_title": null,
+      "reviewed_at": "2026-10-28"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{booktabs}
+
+\title{Delta-Compressed Bitmap Indexes for\\Low-Latency Analytics}
+\author{P. Raman, K. Ito, M. Alvarez\\
+Data Systems Research Group\\
+\texttt{dsr@example.org}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Analytical engines increasingly rely on bitmap indexes to answer selective
+predicate queries over append-only fact tables. Classical bitmap indexes are
+compact for dense attributes but degrade badly for high-cardinality columns,
+where posting lists are sparse and long. We present Delta-Compressed Bitmap
+Indexes (DCBI), which store each posting list as a sequence of delta-encoded
+blocks with per-block skip pointers. Queries intersect blocks instead of full
+lists, so the number of memory accesses grows with the number of matching
+blocks rather than with the cardinality of the column. On a 400-million-row
+analytics workload, DCBI answers selective conjunctions 2.3x faster than a
+Roaring bitmap baseline at comparable index size.
+\end{abstract}
+
+\section{Introduction}
+Bitmap indexes encode each distinct attribute value as a bit vector over the
+row identifiers. Conjunction and disjunction then reduce to bitwise operations.
+For high-cardinality columns, however, vectors are extremely sparse: a naive
+dense encoding wastes memory, while a plain sorted posting list loses the
+word-level parallelism that makes bitmap intersections fast.
+
+Delta compression bridges the two extremes. Posting lists are sorted by
+construction, so consecutive identifiers differ by small deltas. Grouping the
+deltas into fixed-size blocks and storing the first identifier of every block
+gives a skip structure that can be searched independently.
+
+\section{Delta-Compressed Posting Lists}
+For a posting list $p_1 < p_2 < \dots < p_n$ we choose block size $B$ (64 in
+our implementation) and emit blocks $b_k = (p_{kB+1}, \delta_{kB+1}, \dots,
+\delta_{(k+1)B})$ where $\delta_i = p_i - p_{i-1}$. Each block is preceded by
+its base identifier, so a query can binary-search the block index, skip whole
+blocks whose range does not intersect the query window, and only decode the
+blocks that can contribute matches.
+
+\section{Evaluation}
+We compare DCBI against a Roaring bitmap baseline on TPC-H lineitem and a
+synthetic append-only event table. Both indexes are built offline and queried
+with the same selective conjunction workload. DCBI reduces average query
+latency from 41.2 ms to 17.8 ms while keeping index size within 8\% of the
+baseline.
+
+\section{Conclusion}
+Delta compression with block-level skip pointers makes bitmap indexes usable
+for high-cardinality analytical columns without sacrificing intersection
+throughput.
+
+\end{document}
