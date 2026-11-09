@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-09",
+  "last_updated": "2026-10-28",
   "requests": [
     {
       "spec_id": "RES-2026-0302",
@@ -10,16 +10,6 @@
       "target_language": null,
       "issue_title": null,
       "reviewed_at": "2026-10-28"
-    },
-    {
-      "spec_id": "RES-2026-0417",
-      "spec_title": "Delta-Compressed Bitmap Indexes for Low-Latency Analytics",
-      "implementation_project": "projects/delta-bitmap-index",
-      "implementation_language": "Go",
-      "decision": "port_requested",
-      "target_language": "Rust",
-      "issue_title": "[ADOPTION REVIEW] RES-2026-0417",
-      "reviewed_at": "2026-11-09"
     }
   ]
 }
